@@ -16,8 +16,6 @@
 
       #end
 
-      ##test
-
     #foreach ($symlink in $symlinks)
 
       #set($slink = '')
