@@ -1240,6 +1240,138 @@ Date: 7/28/16
 
 #end
 
+#macro(TabContRe)
+
+    #set ($TabCont = $_XPathTool.selectSingleNode($Module, 'module-block/content/system-data-structure/tabs-content-reusable'))
+    #set ($TcHeadline = $TabCont.getChild("headline").text)
+
+    #macro(TopTab)
+
+        ##set ($TabCont = $_XPathTool.selectSingleNode($Module, 'module-block/content/system-data-structure/tabs-content-3'))
+        ##set ($TcHeadline = $TabCont.getChild("headline").text)
+
+        #set($Tabs = $_XPathTool.selectNodes($TabCont, 'tab-1'))
+
+
+            #foreach($Tab in $Tabs)
+
+                #set ($TbName = $Tab.getChild("tab-name").text.toLowerCase())
+                #set ($TbBgClass = $Tab.getChild("background").getChild("class").text)
+                #set($TabPanes = $_XPathTool.selectNodes($Tab, 'tab-pane'))
+
+                <li role="presentation" class="$_EscapeTool.xml($TbName) $TbBgClass #if($foreach.first)active#end">
+                    <a href="#$_EscapeTool.xml($TbName)" aria-controls="$_EscapeTool.xml($TbName)" role="tab" data-toggle="tab">
+                      <h1>$_EscapeTool.xml($TbName)</h1>
+                   </a>
+                </li>
+            #end
+
+    #end
+
+    #macro(TabsNpanes)
+
+        #set($Tabs = $_XPathTool.selectNodes($TabCont, 'tab-1'))
+
+
+        #foreach($Tab in $Tabs)
+
+            #set ($TbName = $Tab.getChild("tab-name").text.toLowerCase())
+
+            #set($TabPanes = $_XPathTool.selectNodes($Tab, 'tab-pane'))
+
+                <div role="tabpanel" class="tab-pane #if($foreach.first)active#end" id="$_EscapeTool.xml($TbName)">
+
+                #foreach($TabPane in $TabPanes)
+
+                    #set ($TbpHeadline = $TabPane.getChild("center-headline").text)
+                    #set ($TbpType = $TabPane.getChild("col-type").text)
+                    #set($PaneColSplit = $_XPathTool.selectSingleNode($TabPane, 'col-split'))
+
+                    <div class="row text-center">
+                      <h3>$_EscapeTool.xml($TbpHeadline)</h3>
+                    </div>
+
+                    <div class="row">
+                    #if($TbpType == "Columns")
+
+                        #set($PaneCols = $_XPathTool.selectNodes($TabPane, 'cols'))
+
+                            #foreach($PaneCol in $PaneCols)
+
+                                #set ($ColHeadline = $PaneCol.getChild("headline").text)
+                                #set ($ColBlurb = $PaneCol.getChild("blurb").text)
+                                #set ($ColButton = $PaneCol.getChild("button").text)
+                                #set ($ColButtonURL = $PaneCol.getChild("button-url").text)
+
+                                <div class="col-sm-4">
+
+                                    <h4>$_EscapeTool.xml($ColHeadline)</h4>
+                                    <p>$_EscapeTool.xml($ColBlurb)</p>
+                                    #if($ColButton !="")<a href="$_EscapeTool.xml($ColButtonURL)" class="text-link">$_EscapeTool.xml($ColButton)</a>#end
+
+                                </div>
+
+                            #end
+
+
+                    #elseif($TbpType == "Split")
+
+                                #set ($ColsHeadline = $PaneColSplit.getChild("headline").text)
+                                #set ($ColsBlurb = $PaneColSplit.getChild("blurb").text)
+                                #set ($ColsButton = $PaneColSplit.getChild("button").text)
+                                #set ($ColsButtonURL = $PaneColSplit.getChild("button-url").text)
+                                #set ($ColsRContent = $PaneColSplit.getChild("right-content"))
+
+                                <div class="col-sm-6">
+                                    <h4>$_EscapeTool.xml($ColsHeadline)</h4>
+                                    <p>$_EscapeTool.xml($ColsBlurb)</p>
+                                    <a href="$_EscapeTool.xml($ColsButtonURL)" class="text-link">$_EscapeTool.xml($ColsButton)</a>
+                                </div>
+                                <div class="col-sm-5">
+                                    $_SerializerTool.serialize($ColsRContent, true)
+                                </div>
+
+                    #end
+                    </div>
+
+                #end
+
+                </div>
+
+        #end
+    #end
+
+
+
+
+<section class="jumbotron jumbotron-tab" data-module="tabbed-content-three">
+  <div class="container">
+    <div class="row">
+      <h2 class="text-center">$_EscapeTool.xml($TcHeadline)</h2>
+      <div class="tab-module">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs nav-justified responsive" role="tablist">
+
+         #TopTab
+
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content responsive">
+
+        #TabsNpanes
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+#end
+
 
 #macro(ModuleLoop)
 
@@ -1362,6 +1494,10 @@ Date: 7/28/16
          #elseif($ModuleName == "tabbed-content-3")
 
          #TabCont
+
+         #elseif($ModuleName == "tabbed-content-reusable")
+
+         #TabContRe
 
         #end
 

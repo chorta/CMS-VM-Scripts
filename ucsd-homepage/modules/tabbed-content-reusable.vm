@@ -1,4 +1,4 @@
-#macro(TabCont)
+#macro(TabContRe)
 
     #set ($TabCont = $_XPathTool.selectSingleNode($Module, 'module-block/content/system-data-structure/tabs-content-3'))
     #set ($TcHeadline = $TabCont.getChild("headline").text)
