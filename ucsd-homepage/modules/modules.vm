@@ -1,0 +1,1375 @@
+#**
+Template: UCSD - Module Tempalte
+Author: Cristian Horta
+Date: 7/28/16
+**#
+
+#set($MainSection = $_XPathTool.selectNodes($contentRoot, '//system-data-structure'))
+#set($HeroSection = $_XPathTool.selectSingleNode($contentRoot, '//system-data-structure/hero-section'))
+#set($Modules = $_XPathTool.selectNodes($contentRoot, '//system-data-structure/module-chooser'))
+
+#macro(HeroIntro)
+
+     #set ($TemplateId = $_XPathTool.selectSingleNode($contentRoot, '//system-data-structure/template-id').text)
+     #set ($HeroHeadline = $HeroSection.getChild("headline").text)
+     #set ($HeroHeadlineBr = $HeroSection.getChild("headline-br").text)
+     #set ($HeroBlurb = $HeroSection.getChild("blurb").text)
+     #set ($HeroButton = $HeroSection.getChild("button").text)
+     #set ($HeroButtonUrl = $HeroSection.getChild("button-url").text)
+     #set ($HeroClass = $HeroSection.getChild("background").getChild("class").text)
+
+     #if($TemplateId == "detail-page")
+
+        <!-- SECTION LIFE AT UCSD HERO -->
+
+        #set ($LinkCheck = $HeroSection.getChild("show-links").text)
+        #set($Anchors = $_XPathTool.selectNodes($contentRoot, '//hero-section/anchor-link'))
+        #if($LinkCheck == "Yes")
+          #set ($hddatamodule = "hero-detail-page-with-anchor-links")
+        #else
+          #set ($hddatamodule = "hero-detail-page")
+        #end
+
+        <section class="jumbotron jumbotron-hero jumbotron-detail jumbotron-life-at-uscd $HeroClass" data-module="$hddatamodule">
+        <div class="container">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="text-indent animated fadeInUp jump-links">
+              <h1>$_EscapeTool.xml($HeroHeadline) #if($HeroHeadlineBr !="")<br/><span>$_EscapeTool.xml($HeroHeadlineBr)</span>#end</h1>
+                #if($LinkCheck == "Yes")
+
+                    <div class="h1-indent">
+
+                    #foreach($Anchor in $Anchors)
+
+                        #set ($aLinkButton = $Anchor.getChild("button").text)
+                        #set ($aLink = $Anchor.getChild("link").text)
+
+                        <a href="$_EscapeTool.xml($aLink)" class="btn btn-lg btn-primary jump-living">$_EscapeTool.xml($aLinkButton) <!--#protect <i class="fa fa-angle-double-down" aria-hidden="true"></i> #protect--> </a>
+
+                    #end
+
+                    </div>
+
+                #end
+
+            </div>
+          </div>
+        </div>
+        </div>
+        </section>
+
+    #elseif($TemplateId == "landing-page")
+
+        <section class="jumbotron jumbotron-campus-life $HeroClass" data-module="hero-landing-page">
+              <div class="container">
+                <div class="row">
+                  <div class="col-sm-10">
+                    <div class="text-indent text-indent-h1 animated animatedFadeInUp fadeInUp">
+                      <h1>$_EscapeTool.xml($HeroHeadline) #if($HeroHeadlineBr !="")<br/><span>$_EscapeTool.xml($HeroHeadlineBr)</span>#end</h1>
+                      <p>$_EscapeTool.xml($HeroBlurb)</p>
+                       #if($HeroButton !="")<a href="$_EscapeTool.xml($HeroButtonUrl)" class="btn btn-lg btn-default" role="button">$_EscapeTool.xml($HeroButton)</a>#end
+                    </div>
+                  </div>
+                </div>
+              </div>
+        </section>
+
+    #end
+
+#end
+
+#macro(AcademicsSlider)
+
+    #set( $facts = $_XPathTool.selectNodes($Module, 'module-block/content/system-data-structure/fact'))
+
+        #foreach($fact in $facts)
+
+            #set ($factStyle = $fact.getChild("fact-style").text)
+            #set ($factText = $fact.getChild("fact").text)
+            #set ($factAtr = $fact.getChild("fact-attribution").text)
+            #set ($factAtr2 = $fact.getChild("fact-attribution-2").text)
+
+                #if($factStyle == "Highlight")
+
+                <div class="quote-item">
+                    <h4>$_EscapeTool.xml($factText)</h4>
+                    <p class="citation">$factAtr</p>
+                </div>
+
+                #else
+
+                <div class="quote-item">
+                    <p>$_EscapeTool.xml($factText)</p>
+                    <p class="citation">$_EscapeTool.xml($factAtr) #if($factAtr2 != "")<span class="citation-position">$_EscapeTool.xml($factAtr2)</span>#end</p>
+                </div>
+
+                #end
+        #end
+#end
+
+#macro(LifeIntro)
+
+    #set( $LifeIntroContent = $_XPathTool.selectSingleNode($Module, 'module-block/content/system-data-structure/life-intro-module'))
+
+
+    #set ($LifeHeadline = $LifeIntroContent.getChild("headline").text)
+    #set ($LifeContent = $LifeIntroContent.getChild("intro-text"))
+    #set ($LifeBgClass = $LifeIntroContent.getChild("background").getChild("class").text)
+    #set ($LifeBgImg = $LifeIntroContent.getChild("background").getChild("path").text)
+
+
+
+
+    <section class="jumbotron jumbotron-white grid-overflow-wrap" data-module="article-with-social-shares-and-image">
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-6">
+              <h2>$_EscapeTool.xml($LifeHeadline)</h2>
+
+              $_SerializerTool.serialize($LifeContent, true)
+
+            </div>
+            <div class="grid-overflow">
+              <div class="row">
+                <div class="col-xs-12 overflow-img $LifeBgClass hidden-xs">
+
+                </div>
+                <div class="visible-xs">
+                  <img class="img-responsive" src="$LifeBgImg" alt="basketball court" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+#end
+
+#macro(InsetCTA)
+
+    #set( $InsetCTA = $_XPathTool.selectSingleNode($Module, 'module-block/content/system-data-structure/inset-cta'))
+
+    #set ($IcHeadline = $InsetCTA.getChild("headline").text)
+    #set ($IcBlurb = $InsetCTA.getChild("blurb").text)
+    #set ($IcButton = $InsetCTA.getChild("button").text)
+    #set ($IcButtonURL = $InsetCTA.getChild("button-url").text)
+    #set ($IcBackgroundClass = $InsetCTA.getChild("background").getChild("class").text)
+
+    <section class="jumbotron jumbotron-timeline $IcBackgroundClass" data-module="callout-image-small-inset">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6 col-md-offset-6">
+            <div class="panel panel-default">
+              <div class="panel-body">
+                <h2>$_EscapeTool.xml($IcHeadline)</h2>
+                <p class="panel-text">$_EscapeTool.xml($IcBlurb)</p>
+                <p><a class="btn btn-default" href="$_EscapeTool.xml($IcButtonURL)">$_EscapeTool.xml($IcButton)</a></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+#end
+
+
+#macro(UpcomingEvents)
+
+    #set( $UpcomingEvents = $_XPathTool.selectNodes($Module, 'module-block/content/system-data-structure/upcoming-events'))
+
+    #set( $Events = $_XPathTool.selectNodes($UpcomingEvents, 'event'))
+
+    #set( $IcHeadline = $_XPathTool.selectSingleNode($UpcomingEvents, 'headline').text)
+
+    #set( $EvBgClass = $_XPathTool.selectSingleNode($UpcomingEvents, 'background').getChild('class').text)
+
+
+    <section class="jumbotron jumbotron-event-multiple $EvBgClass" data-module="event-multiple">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-6">
+            <h2>$_EscapeTool.xml($IcHeadline)</h2>
+
+            <div class="events-wrap">
+
+        #foreach($event in $Events)
+
+            #set ($eventDate = $event.getChild("event-date").text)
+            #set ($eventName = $event.getChild("event-name").text)
+            #set ($eventUrl = $event.getChild("event-url").text)
+
+            <p>$eventDate<br/>
+            <a href="$_EscapeTool.xml($eventUrl)" class="text-link">$_EscapeTool.xml($eventName)</a></p>
+
+        #end
+
+            </div>
+            <a href="http://calendar.ucsd.edu/" alt="See All Events" class="btn btn-lg btn-default" role="button">See All Events</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+#end
+
+#macro(HeadlineText)
+
+    #set( $HeadlineText = $_XPathTool.selectSingleNode($Module, 'module-block/content/system-data-structure/headline-text'))
+
+    #set ($HtHeadline = $HeadlineText.getChild("headline").text)
+    #set ($HtBlurb = $HeadlineText.getChild("blurb").text)
+    #set ($HtLink = $HeadlineText.getChild("link").text)
+    #set ($HtButton = $HeadlineText.getChild("button").text)
+    #set ($HtButtonUrl = $HeadlineText.getChild("button-url").text)
+
+    #if($HtLink == "Yes")
+
+    <aside class="jumbotron jumbotron-white jumbotron-callout-sm support-callout" data-module="text-and-cta-small">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-5">
+                <h3 class="callout-title">$_EscapeTool.xml($HtHeadline)</h3>
+                </div>
+                <div class="col-md-5 event-description no-padding">
+                <p>$_EscapeTool.xml($HtBlurb)</p>
+                </div>
+                <div class="col-lg-2">
+                <a href="$_EscapeTool.xml($HtButtonUrl)" class="text-link">$_EscapeTool.xml($HtButton)</a>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    #elseif($HtLink == "No")
+
+    <section class="jumbotron jumbotron-white" data-module="text-and-headline">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-10">
+                    <h2>$_EscapeTool.xml($HtHeadline)</h2>
+                    <p>$_EscapeTool.xml($HtBlurb)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    #end
+#end
+
+
+#macro(TexImgCta)
+
+    #set( $TextImgCTA = $_XPathTool.selectSingleNode($Module, 'module-block/content/system-data-structure/text-image-cta'))
+    #set ($TiCHeadline = $TextImgCTA.getChild("headline").text)
+    #set ($TicBlurb = $TextImgCTA.getChild("blurb").text)
+    #set ($TicButton = $TextImgCTA.getChild("button").text)
+    #set ($TicButtonURL = $TextImgCTA.getChild("button-url").text)
+    #set ($TiCImgPos = $TextImgCTA.getChild("img-pos").text)
+    #set ($TiCImgStyle = $TextImgCTA.getChild("style").text)
+    #set ($aLinkId = $TextImgCTA.getChild("anchor-id").text)
+    #set ($TicBgClass = $TextImgCTA.getChild("background").getChild("class").text)
+
+    #if($TiCImgStyle == "Dark")
+        #set($TiCImgStyleClass = "jumbotron-gray")
+    #else
+        #set($TiCImgStyleClass = "side-image-white")
+    #end
+
+    #if($TiCImgPos =="Right")
+
+        #set($ImgContClass = "image-container col-sm-3 col-sm-offset-9 col-md-5 col-md-offset-7  pull-right hidden-xs")
+        #set($TextContClass = "col-md-6 col-sm-8 side-image-content clearfix")
+
+    #elseif($TiCImgPos =="Left")
+
+        #set($ImgContClass = "image-container col-sm-3 col-md-5  pull-left hidden-xs")
+        #set($TextContClass = "col-sm-8 col-sm-offset-4 col-md-6 col-md-offset-6 side-image-content clearfix")
+
+    #end
+
+
+
+
+    <section class="jumbotron side-image jumbotron-full-height jumbotron-athletics $TiCImgStyleClass text-dark" data-module="text-and-cta-with-full-height-image-right">
+        #if($aLinkId != "")
+        <a class="anchor" id="$_EscapeTool.xml($aLinkId)"></a>
+        #end
+        <div class="$ImgContClass">
+          <div class="background-image-holder $TicBgClass">
+          </div>
+        </div>
+        <div class="image-container-mobile visible-xs">
+          <div class="background-image-holder $TicBgClass">
+          </div>
+        </div>
+        <div class="container">
+          <div class="row">
+            <div class="$TextContClass">
+              <h2>$_EscapeTool.xml($TiCHeadline)</h2>
+              <p>$_EscapeTool.xml($TicBlurb)</p>
+              <p><a class="btn btn-default" href="$TicButtonURL">$_EscapeTool.xml($TicButton)</a></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+#end
+
+
+#macro(TexImgCtaLinks)
+
+    #set( $TexImgCtaLinks = $_XPathTool.selectSingleNode($Module, 'module-block/content/system-data-structure/text-image-cta-links'))
+    #set( $TiClLinks = $_XPathTool.selectNodes($TexImgCtaLinks, 'links'))
+    #set ($TiClHeadline = $TexImgCtaLinks.getChild("headline").text)
+    #set ($TiClBlurb = $TexImgCtaLinks.getChild("blurb").text)
+    #set ($TiClButton = $TexImgCtaLinks.getChild("button").text)
+    #set ($TiClButtonURL = $TexImgCtaLinks.getChild("button-url").text)
+    #set ($aLinkId2 = $TexImgCtaLinks.getChild("anchor-id").text)
+    #set ($TicLBgClass = $TexImgCtaLinks.getChild("background").getChild("class").text)
+
+    <section class="jumbotron side-image jumbotron-full-height jumbotron-living jumbotron-gray text-dark" data-module="text-and-cta-with-full-height-image-left-and-popover">
+        #if($aLinkId2 != "")
+        <a class="anchor" id="$_EscapeTool.xml($aLinkId2)"></a>
+        #end
+        <div class="image-container col-sm-3 col-md-5  pull-left hidden-xs">
+          <div class="background-image-holder $TicLBgClass">
+          </div>
+        </div>
+        <div class="image-container-mobile visible-xs">
+          <div class="background-image-holder $TicLBgClass">
+          </div>
+        </div>
+        <div class="container">
+          <div class="row">
+            <div class="col-sm-8 col-sm-offset-4 col-md-6 col-md-offset-6 side-image-content clearfix">
+              <h2>$_EscapeTool.xml($TiClHeadline)</h2>
+              <p>$_EscapeTool.xml($TiClBlurb)</p>
+              <ul class="list-inline">
+
+                #foreach($TiClLink in $TiClLinks)
+                    #set ($TiClLnk = $TiClLink.getChild("link").text)
+                    #set ($TiClLinkURL = $TiClLink.getChild("link-url").text)
+                    <li><a href="$_EscapeTool.xml($TiClLinkURL)" class="text-link">$_EscapeTool.xml($TiClLnk)</a></li>
+                #end
+              </ul>
+              <div id="popover-2-content" class="hidden">
+                <a href="#lifeLiving" class="popover-close close-icon-white"></a>
+                <div>
+                  <p>Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis.</p>
+                  <ul class="list-bulleted list-bulleted-blue">
+                    <li>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe.</li>
+                    <li>Omnis dolor repellendu quod</li>
+                    <li>Caum soluta nobis est eligendi optio cumque nihil impedit quoquod maxime placeat facere possimus maxime placeat facere poss</li>
+                  </ul>
+                </div>
+              </div>
+              <div id="popover-2-title" class="hidden">
+                Dorms
+              </div>
+              <p><a class="btn btn-default" href="$_EscapeTool.xml($TiClButtonURL)">$_EscapeTool.xml($TiClButton)</a></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+#end
+
+
+#macro(CalloutImageSmall)
+
+    #set( $CalloutImageSmall = $_XPathTool.selectSingleNode($Module, 'module-block/content/system-data-structure/callout-image-small'))
+    #set ($CISHeadline = $CalloutImageSmall.getChild("headline").text)
+    #set ($CISHeadlineBr = $CalloutImageSmall.getChild("headline-br").text)
+    #set ($CISBlurb = $CalloutImageSmall.getChild("blurb").text)
+    #set ($CISButton = $CalloutImageSmall.getChild("button").text)
+    #set ($CISButtonUrl = $CalloutImageSmall.getChild("button-url").text)
+    #set ($CIBImgClass = $CalloutImageSmall.getChild("background").getChild("class").text)
+
+
+<section class="jumbotron jumbotron-callout-sm jumbotron-research $CIBImgClass" data-module="callout-image-small">
+  <div class="container">
+    <div class="text-indent text-indent-h2">
+      <h2>$_EscapeTool.xml($CISHeadline) #if($CISHeadlineBr !="")<br/><span>$_EscapeTool.xml($CISHeadlineBr)</span>#end</h2>
+      <p>$_EscapeTool.xml($CISBlurb)</p>
+      <a href="$_EscapeTool.xml($CISButtonUrl)" class="btn btn-lg btn-default" role="button">$_EscapeTool.xml($CISButton)</a>
+    </div>
+  </div>
+</section>
+
+
+#end
+
+#macro(CalloutImageSocial)
+
+    #set( $CalloutImageSocial = $_XPathTool.selectSingleNode($Module, 'module-block/content/system-data-structure/callout-image-social'))
+    #set ($CsHeadline = $CalloutImageSocial.getChild("headline").text)
+    #set ($CsHeadlineBr = $CalloutImageSocial.getChild("headline-br").text)
+    #set ($Cslurb = $CalloutImageSocial.getChild("blurb").text)
+    #set ($CsButton = $CalloutImageSocial.getChild("button").text)
+    #set ($CsButtonUrl = $CalloutImageSocial.getChild("button-url").text)
+    #set ($CsButtonImg = $CalloutImageSocial.getChild("image").getChild("path").text)
+
+
+<section class="jumbotron jumbotron-callout-sm jumbotron-campus-life" data-module="callout-image-small-social">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-8 campus-life">
+        <div class="text-indent text-indent-h2 campus-life-text">
+      <h2>$_EscapeTool.xml($CsHeadline) #if($CsHeadlineBr !="")<br/><span>$_EscapeTool.xml($CsHeadlineBr)</span>#end</h2>
+      <p>$_EscapeTool.xml($Cslurb)</p>
+      <a href="$CsButtonUrl" class="btn btn-lg btn-default" role="button">$_EscapeTool.xml($CsButton)</a>
+    </div>
+      </div>
+      <div class="col-sm-4 no-gutter">
+        <div class="instragram-feed">
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+#end
+
+#macro(CalloutContentTwoThree)
+
+    #set( $CallContTwoThree = $_XPathTool.selectNodes($Module, 'module-block/content/system-data-structure/callout-content-2-and-3'))
+    #set ($CCTTHeadline = $_XPathTool.selectSingleNode($CallContTwoThree, 'headline').text)
+    #set( $CallBoxes = $_XPathTool.selectNodes($CallContTwoThree, 'callout-box'))
+    #set( $aLinkId3 = $_XPathTool.selectSingleNode($CallContTwoThree, 'anchor-id').tex)
+    #set ($CallmgClass = $_XPathTool.selectSingleNode($CallContTwoThree, 'background/class').text)
+
+    #foreach($CallBox in $CallBoxes)
+
+        #set($colCount = $foreach.count)
+
+        #if($colCount == "2")
+
+            #set($JumboClass = "jumbotron-culture $CallmgClass")
+            #set($ColSize = "col-md-6")
+            #set($DataMod = "callout-content-two")
+
+        #elseif($colCount == "3")
+
+            #set($JumboClass = "jumbotron-callout-three jumbotron-culture $CallmgClass")
+            #set($ColSize = "col-md-4")
+            #set($DataMod = "callout-content-three")
+
+        #end
+
+    #end
+
+
+
+    <section class="jumbotron $JumboClass" data-module="$DataMod">
+        #if($aLinkId3 != "")
+        <a class="anchor" id="$_EscapeTool.xml($aLinkId3)"></a>
+        #end
+      <div class="container">
+        <div class="text-indent">
+          <h2>$CCTTHeadline</h2>
+        </div>
+        <div class="row">
+
+        #foreach($CallBox in $CallBoxes)
+
+        #set ($CbxHeadline = $CallBox.getChild("headline").text)
+        #set ($CbxBlurb = $CallBox.getChild("blurb").text)
+        #set ($CbxButton = $CallBox.getChild("button-text").text)
+        #set ($CbxButtonUrl = $CallBox.getChild("button-url").text)
+
+          <div class="$ColSize">
+            <div class="panel panel-primary">
+              <div class="panel-body">
+                <h3>$_EscapeTool.xml($CbxHeadline)</h3>
+                <p class="panel-text">$_EscapeTool.xml($CbxBlurb)</p>
+                <p class="text-right">
+                  <a href="$_EscapeTool.xml($CbxButtonUrl)" class="text-link">$_EscapeTool.xml($CbxButton)</a>
+                </p>
+              </div>
+            </div>
+          </div>
+          #end
+
+        </div>
+      </div>
+    </section>
+
+#end
+
+#macro(CalloutContentFour)
+
+    #set( $CallContFour = $_XPathTool.selectNodes($Module, 'module-block/content/system-data-structure/callout-content-4'))
+    #set ($CCfHeadline = $_XPathTool.selectSingleNode($CallContFour, 'headline').text)
+    #set ($CCfHeadlineBr = $_XPathTool.selectSingleNode($CallContFour, 'headline-br').text)
+    #set ($CCfBlurb = $_XPathTool.selectSingleNode($CallContFour, 'blurb').text)
+    #set ($CCfButton = $_XPathTool.selectSingleNode($CallContFour, 'button').text)
+    #set ($CCfButtonUrl = $_XPathTool.selectSingleNode($CallContFour, 'button-url').text)
+    #set ($CCfButton2 = $_XPathTool.selectSingleNode($CallContFour, 'button-text-2').text)
+    #set ($CCfButtonUrl2 = $_XPathTool.selectSingleNode($CallContFour, 'button-url-2').text)
+    #set( $CCfBoxes = $_XPathTool.selectNodes($CallContFour, 'callout-box'))
+    #set ($CCfBgClass = $_XPathTool.selectSingleNode($CallContFour, 'background/class').text)
+
+
+<section class="jumbotron jumbotron-attend $CCfBgClass" data-module="callout-content-four">
+  <div class="container">
+    <div class="text-indent">
+      <h2>$_EscapeTool.xml($CCfHeadline) #if($CCfHeadlineBr !="")<br/><span>$_EscapeTool.xml($CCfHeadlineBr)</span>#end</h2>
+      <p>$_EscapeTool.xml($CCfBlurb)</p>
+      <a href="$_EscapeTool.xml($CCfButtonUrl)"><button type="button" class="btn btn-lg btn-default" role="button">$_EscapeTool.xml($CCfButton)</button></a>
+    </div>
+    <div class="row">
+    #foreach($CCfCallBox in $CCfBoxes)
+
+        #set($CbxCount = $foreach.count)
+
+        #set ($CbxFHeadline = $CCfCallBox.getChild("headline").text)
+        #set ($CbxFBlurb = $CCfCallBox.getChild("blurb").text)
+        #set ($CbxFButton = $CCfCallBox.getChild("button-text").text)
+        #set ($CbxFButtonUrl = $CCfCallBox.getChild("button-url").text)
+        #set ($CbxFButton2 = $CCfCallBox.getChild("button-text-2").text)
+        #set ($CbxFButtonUrl2 = $CCfCallBox.getChild("button-url-2").text)
+
+      <div class="col-md-6 clearfix">
+        <div class="panel panel-primary">
+          <div class="panel-body" id="panel$CbxCount">
+            <h3>$_EscapeTool.xml($CbxFHeadline)</h3>
+                <p class="panel-text">$_EscapeTool.xml($CbxFBlurb)</p>
+                <p class="text-right">
+                  <a href="$_EscapeTool.xml($CbxFButtonUrl)" class="text-link">$_EscapeTool.xml($CbxFButton)</a>
+                </p>
+                #if($CbxFButton2 !="")
+                <p class="text-right">
+                  <a href="$_EscapeTool.xml($CbxFButtonUrl2)" class="text-link">$_EscapeTool.xml($CbxFButton2)</a>
+                </p>
+                #end
+          </div>
+        </div>
+      </div>
+    #end
+    </div>
+  </div>
+</section>
+
+#end
+
+#macro(StaggeredTwo)
+
+
+    #set( $StPanel1 = $_XPathTool.selectSingleNode($Module, 'module-block/content/system-data-structure/panel'))
+    #set ($StHeadline = $StPanel1.getChild("headline").text)
+    #set ($StBlurb = $StPanel1.getChild("blurb").text)
+
+    #set( $StPanel2 = $_XPathTool.selectSingleNode($Module, 'module-block/content/system-data-structure/panel-2'))
+    #set ($StHeadline2 = $StPanel2.getChild("headline").text)
+    #set ($StBlurb2 = $StPanel2.getChild("blurb").text)
+
+
+<section class="jumbotron jumbotron-mission" data-module="content-two-staggered">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-7">
+        <div class="panel panel-secondary">
+          <div class="panel-body">
+            <h2>$_EscapeTool.xml($StHeadline)</h2>
+            <p class="panel-text">$_EscapeTool.xml($StBlurb)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-7 col-md-offset-5">
+        <div class="panel panel-secondary">
+          <div class="panel-body">
+            <h2>$_EscapeTool.xml($StHeadline2)</h2>
+            <p class="panel-text">$_EscapeTool.xml($StBlurb2)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+#end
+
+#macro(TextImage)
+
+    #set( $TextImage = $_XPathTool.selectSingleNode($Module, 'module-block/content/system-data-structure/text-and-image'))
+    #set ($TiHeadline = $TextImage.getChild("headline").text)
+    #set ($TiBlurb = $TextImage.getChild("blurb").text)
+    #set ($TiImg = $TextImage.getChild("background").getChild("image").getChild("path").text)
+    #set ($TiImgClass = $TextImage.getChild("background").getChild("class").text)
+
+
+<section class="jumbotron jumbotron-white grid-overflow-wrap jumbotron-about-intro" data-module="text-and-image">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-6">
+        <h2>$_EscapeTool.xml($TiHeadline)</h2>
+        <p>$_EscapeTool.xml($TiBlurb)</p>
+      </div>
+      <div class="grid-overflow">
+        <div class="row">
+          <div class="overflow-img hidden-xs $TiImgClass">
+          </div>
+          <div class="visible-xs">
+            <img class="img-responsive" src="$TiImg" alt="$_EscapeTool.xml($TiHeadline)" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+#end
+
+#macro(CustomAffiliate)
+
+    #set( $CustomAff = $_XPathTool.selectSingleNode($Module, 'module-block/content/system-data-structure/custom-affiliate'))
+    #set ($CaHeadline = $CustomAff.getChild("headline").text)
+    #set ($CaHeadlineBr = $CustomAff.getChild("headline-br").text)
+    #set ($CaBlurb = $CustomAff.getChild("blurb").text)
+    #set ($CaButtom = $CustomAff.getChild("button-text").text)
+    #set ($CaButtonUrl = $CustomAff.getChild("button-url").text)
+
+<section class="jumbotron jumbotron-full-height jumbotron-affiliate" data-module="custom-affiliate">
+  <div class="image-container col-sm-3 col-sm-offset-9 col-md-5 col-md-offset-7  pull-right hidden-xs">
+    <div class="background-image-holder">
+    </div>
+  </div>
+  <div class="image-container-mobile visible-xs">
+    <div class="background-image-holder">
+    </div>
+  </div>
+  <div class="container affiliate-text">
+    <div class="row">
+      <div class="col-sm-6 side-image-content clearfix">
+        <h2>$_EscapeTool.xml($CaHeadline) #if($CaHeadlineBr !="")<br/>$_EscapeTool.xml($CaHeadlineBr)#end</h2>
+        <p>$_EscapeTool.xml($CaBlurb)</p>
+        <p><a class="btn btn-default" href="$_EscapeTool.xml($CaButtonUrl)">$_EscapeTool.xml($CaButtom)</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+#end
+
+#macro(AcademicYear)
+
+    #set( $AcademicYr = $_XPathTool.selectSingleNode($Module, 'module-block/content/system-data-structure/academic-year'))
+    #set ($AcHeadline = $AcademicYr.getChild("headline").text)
+    #set( $CcHeadline = $_XPathTool.selectSingleNode($AcademicYr, 'course-catalog/headline').text)
+    #set( $CctHeadline = $_XPathTool.selectSingleNode($AcademicYr, 'course-catalog/thumb-headline').text)
+    #set( $CcImg = $_XPathTool.selectSingleNode($AcademicYr, 'course-catalog/catalog-thumb/link').text)
+    #set( $CcBlurb = $_XPathTool.selectSingleNode($AcademicYr, 'course-catalog/blurb').text)
+    #set( $CcButtonText = $_XPathTool.selectSingleNode($AcademicYr, 'course-catalog/buton-text').text)
+    #set( $CcButtonUrl = $_XPathTool.selectSingleNode($AcademicYr, 'course-catalog/button-url').text)
+    #set( $AcHeadline2 = $_XPathTool.selectSingleNode($AcademicYr, 'academic-calendar/headline').text)
+
+    #set( $calItems = $_XPathTool.selectNodes($AcademicYr, 'academic-calendar/calendar-item'))
+
+
+    <section class="jumbotron jumbotron-calendar" data-module="callout-content-two-calendar">
+      <div class="container">
+        <h2 class="calendar-heading text-center">$_EscapeTool.xml($AcHeadline)</h2>
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="panel">
+              <div class="row">
+                <div class="col-sm-6 col-lg-5 catalog-img-wrap hidden-xs">
+                  <div class="catalog-img">
+                    <h3>$_EscapeTool.xml($CctHeadline)</h3>
+                    <div class="row">
+                      <div class="col-sm-offset-6 col-sm-6">
+                        <img class="img-responsive" alt="Brand" src="$CcImg"/>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+                <div class="col-sm-6 col-lg-7">
+                  <div class="catalog-text">
+                    <h4>$_EscapeTool.xml($CcHeadline)</h4>
+                    <p>$_EscapeTool.xml($CcBlurb)</p>
+                    <p class="text-right"><a href="$_EscapeTool.xml($CcButtonUrl)" class="text-link" alt="$_EscapeTool.xml($CcHeadline)">Get Info</a></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="panel">
+              <div class="calendar-text panel-body">
+                <h4 class="text-center">$_EscapeTool.xml($AcHeadline2)</h4>
+                <div class="row">
+
+                #foreach($calItem in $calItems)
+
+                    #set ($cEDate= $calItem.getChild("event-date").text)
+                    #set ($cName= $calItem.getChild("event-name").text)
+                    #set ($cUrl= $calItem.getChild("event-url").text)
+
+                  <div class="col-xs-6">
+                    <a href="$cUrl" class="text-link date-link">$_EscapeTool.xml($cEDate)</a>
+                    <p>$_EscapeTool.xml($cName)</p>
+                  </div>
+
+              #end
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+#end
+
+#macro(Testimonials)
+
+    #set ($Testimonials = $_XPathTool.selectSingleNode($Module, 'module-block/content/system-data-structure/testimonials'))
+    #set ($tHeadline = $Testimonials.getChild("headline").text)
+    #set ($tHeadlineBr = $Testimonials.getChild("headline-br").text)
+    #set ($tBlurb = $Testimonials.getChild("blurb").text)
+    #set( $tTestimonials = $_XPathTool.selectNodes($Testimonials, 'testimonial'))
+
+<section class="jumbotron jumbotron-white jumbotron-testimonials" data-module="testimonials">
+  <div class="container no-gutter">
+    <div class="row">
+      <div class="col-sm-5 testimonial-intro hidden-xs">
+        <h2>$_EscapeTool.xml($tHeadline) #if($CaHeadlineBr !="")<br/>$_EscapeTool.xml($tHeadlineBr)#end</h2>
+        <p>$_EscapeTool.xml($tBlurb)</p>
+      </div>
+      <div class="col-sm-5 testimonial-intro testimonial-intro-mobile visible-xs no-gutter">
+        <h2>$_EscapeTool.xml($tHeadline) #if($CaHeadlineBr !="")<br/>$_EscapeTool.xml($tHeadlineBr)#end</h2>
+        <p>$_EscapeTool.xml($tBlurb)</p>
+      </div>
+      <div class="col-sm-7 testimonial-wrap no-gutter">
+      #foreach($Testimonial in $tTestimonials)
+
+        #set ($tQuote = $Testimonial.getChild("quote").text)
+        #set ($tName = $Testimonial.getChild("name").text)
+
+        #set($tCount = $foreach.count)
+
+        #if($tCount == "1")
+            #set($tnum = "one")
+        #elseif ($tCount == "2")
+            #set($tnum = "two")
+        #elseif ($tCount == "3")
+            #set($tnum = "three")
+        #elseif ($tCount == "4")
+            #set($tnum = "four")
+        #end
+
+        <div class="col-xs-6 col-sm-3 no-gutter">
+          <div class="testimonial testimonial-$tnum">
+            <a href="#" class="btn pop-over-testimonial-$tCount" data-toggle="popover" data-trigger="focus" tabindex="0"></a>
+            <div id="popover-testimonial-content-$tCount" class="hidden">
+              <span class="popover-close close-icon-white"></span>
+              <div class="row">
+                <div class="col-md-5 visible-md visible-lg">
+                  <div class="testimonial-thumb testimonial-thumb-$tnum"></div>
+                </div>
+                <div class="col-md-7">
+                  <blockquote><em>$_EscapeTool.xml($tQuote)</em></blockquote>
+                  <p class="small">$_EscapeTool.xml($tName)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+       #end
+     </div>
+    </div>
+  </div>
+</section>
+
+#end
+
+
+#macro(CalloutContentNine)
+
+    #set ($CallContNine = $_XPathTool.selectSingleNode($Module, 'module-block/content/system-data-structure/callout-content-9'))
+    #set ($CcnHeadline = $CallContNine.getChild("headline").text)
+    #set ($CcnHeadlineBr = $CallContNine.getChild("headline-br").text)
+    #set ($CcnBlurb = $CallContNine.getChild("blurb").text)
+    #set( $ccnPanels = $_XPathTool.selectNodes($CallContNine, 'panel'))
+
+
+<section class="jumbotron jumbotron-white jumbotron-excellence" data-module="callout-content-min-three">
+  <div class="container">
+    <div class="text-indent text-indent-h2">
+      <h2>$_EscapeTool.xml($CcnHeadline) #if($CaHeadlineBr !="")<br/><span>$_EscapeTool.xml($CcnHeadlineBr)</span>#end</h2>
+      <p>$_EscapeTool.xml($CcnBlurb)</p>
+    </div>
+    <div class="row academics-wrap">
+
+        #foreach($ccnPanel in $ccnPanels)
+
+            #set ($CcnTitle = $ccnPanel.getChild("title").text)
+            #set ($CcnLink = $ccnPanel.getChild("link").text)
+            #set ($CcnImage = $ccnPanel.getChild("image").getChild("path").text)
+            #set ($CcnLast = $ccnPanel.getChild("last-panel").getChild("value").text)
+            #set ($CcnClass = $ccnPanel.getChild("background").getChild("class").text)
+
+        <div class="col-sm-6 col-lg-4 #if($CcnLast == "Yes")last#end">
+            <a href="$_EscapeTool.xml($CcnLink)" class="thumbnail excellence-arts $CcnClass">
+            <h4 class="thumbnail-heading">$_EscapeTool.xml($CcnTitle)</h4>
+            </a>
+        </div>
+
+        #end
+
+    </div>
+  </div>
+</section>
+
+
+#end
+
+#macro(NewsImg)
+
+    #set ($NewsImg = $_XPathTool.selectSingleNode($Module, 'module-block/content/system-data-structure/news-with-images'))
+    #set ($NiHeadline = $NewsImg.getChild("headline").text)
+    #set( $NewsItems = $_XPathTool.selectNodes($NewsImg, 'news-item'))
+
+
+<section class="jumbotron jumbotron-gray jumbotron-news" data-module="news-with-image">
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-8">
+        <h2>$_EscapeTool.xml($NiHeadline)</h2>
+      </div>
+      <div class="col-xs-4 view-all-link text-right">
+        <a href="http://ucsdnews.ucsd.edu/" class="text-link hidden-xs">View All News</a>
+        <a href="http://ucsdnews.ucsd.edu/" class="text-link text-right visible-xs">View All</a>
+      </div>
+    </div>
+
+    <div class="row">
+
+      #foreach($NewsItem in $NewsItems)
+
+       #set ($NiDate = $NewsItem.getChild("date").text)
+       #set ($NiHeadline = $NewsItem.getChild("headline").text)
+       #set ($NiLink = $NewsItem.getChild("link").text)
+       #set ($NiImg = $NewsItem.getChild("image").getChild("path").text)
+
+      <div class="col-sm-4 no-gutter">
+        <div class="panel panel-default">
+          <img class="img-responsive" src="$_EscapeTool.xml($NiImg)" alt="$_EscapeTool.xml($NiHeadline)"/>
+          <div class="panel-heading">
+            <p class="panel-news-date small">$_EscapeTool.xml($NiDate)</p>
+            <h4 class="panel-news-title">$_EscapeTool.xml($NiHeadline)</h4>
+          </div>
+          <div class="panel-body text-right">
+            <a href="$_EscapeTool.xml($NiLink)" class="text-link">Read More</a>
+          </div>
+        </div>
+      </div>
+      #end
+
+    </div>
+  </div>
+</section>
+
+#end
+
+#macro(Stats)
+
+    #set ($Stats = $_XPathTool.selectSingleNode($Module, 'module-block/content/system-data-structure/stats'))
+    #set ($StatsType = $Stats.getChild("type").text)
+
+    #set ($StHeadline = $Stats.getChild("intro-top").getChild("headline").text)
+    #set ($StHeadlineBr = $Stats.getChild("intro-top").getChild("headline-br").text)
+    #set ($StBlurb = $Stats.getChild("intro-top").getChild("blurb").text)
+    #set ($StButton = $Stats.getChild("intro-top").getChild("button").text)
+    #set ($StButtonUrl = $Stats.getChild("intro-top").getChild("button-url").text)
+
+    #set ($StHeadlineB = $Stats.getChild("intro-bottom").getChild("headline").text)
+    #set ($StHeadlineBrB = $Stats.getChild("intro-bottom").getChild("headline-br").text)
+    #set ($StBlurbB = $Stats.getChild("intro-bottom").getChild("blurb").text)
+    #set ($StButtonB = $Stats.getChild("intro-bottom").getChild("button").text)
+    #set ($StButtonUrlB = $Stats.getChild("intro-bottom").getChild("button-url").text)
+
+    #if($StatsType == "Default")
+
+
+
+    <section class="jumbotron jumbotron-quote-slider" data-module="stats">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-6">
+            <div class="text-indent text-indent-h2">
+              <h2>$_EscapeTool.xml($StHeadline) #if($StHeadlineBr !="")<br/><span>$_EscapeTool.xml($StHeadlineBr)</span>#end</h2>
+              <p>$_EscapeTool.xml($StBlurb)</p>
+              <a href="$_EscapeTool.xml($StButtonUrl)" alt="$AcaButtonText1" class="btn btn-lg btn-primary">$_EscapeTool.xml($StButton)</a>
+            </div>
+            <div class="text-indent-block">
+              <h3><span>$_EscapeTool.xml($StHeadlineB)</span></h3>
+              <p>$_EscapeTool.xml($StBlurbB)</p>
+              <a href="$_EscapeTool.xml($StButtonUrlB)" class="text-link-secondary" alt="$AcaButtonText2">$_EscapeTool.xml($StButtonB)</a>
+            </div>
+          </div>
+
+          #macro(AcademicsSlider)
+
+          #set( $facts = $_XPathTool.selectNodes($Stats, 'fact'))
+
+            #foreach($fact in $facts)
+
+                #set ($factStyle = $fact.getChild("fact-style").text)
+                #set ($factText = $fact.getChild("fact").text)
+                #set ($factAtr = $fact.getChild("fact-attribution").text)
+                #set ($factAtr2 = $fact.getChild("fact-attribution-2").text)
+
+                    #if($factStyle == "Highlight")
+
+                        <div class="quote-item">
+                            <h4>$factText</h4>
+                            <p class="citation">$factAtr</p>
+                        </div>
+
+                    #else
+
+                        <div class="quote-item">
+                            <p>$factText</p>
+                            <p class="citation">$factAtr #if($factAtr2 != "")<span class="citation-position">$factAtr2</span>#end</p>
+                        </div>
+
+                    #end
+
+
+            #end
+
+
+
+
+          #end
+
+        <div class="col-md-4 col-md-offset-1">
+            <div class="quote-slider">
+
+            #AcademicsSlider
+
+            </div>
+        </div>
+
+        </div>
+      </div>
+    </section>
+
+
+
+    #elseif($StatsType == "Small")
+
+
+<section class="jumbotron jumbotron-quote-slider jumbotron-quote-slider-sm" data-module="stats-small">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6">
+        <div class="text-indent text-indent-h2">
+        <h2>$_EscapeTool.xml($StHeadline) #if($StHeadlineBr !="")<br/><span>$_EscapeTool.xml($StHeadlineBr)</span>#end</h2>
+          <p class="text-indent-h2">$_EscapeTool.xml($StBlurb)</p>
+          #if($StButtonUrl !="")<a href="$_EscapeTool.xml($StButtonUrl)" alt="$AcaButtonText1" class="btn btn-lg btn-primary" role="button">$_EscapeTool.xml($StButton)</a>#end
+        </div>
+      </div>
+      <div class="col-md-4 col-md-offset-1">
+        <div class="quote-slider">
+
+        #macro(AcademicsSlider)
+
+          #set( $facts = $_XPathTool.selectNodes($Stats, 'fact'))
+
+            #foreach($fact in $facts)
+
+                #set ($factStyle = $fact.getChild("fact-style").text)
+                #set ($factText = $fact.getChild("fact").text)
+                #set ($factAtr = $fact.getChild("fact-attribution").text)
+                #set ($factAtr2 = $fact.getChild("fact-attribution-2").text)
+
+                    #if($factStyle == "Highlight")
+
+                        <div class="quote-item">
+                            <h4>$factText</h4>
+                            <p class="citation">$factAtr</p>
+                        </div>
+
+                    #else
+
+                        <div class="quote-item">
+                            <p>$factText</p>
+                            <p class="citation">$factAtr #if($factAtr2 != "")<span class="citation-position">$factAtr2</span>#end</p>
+                        </div>
+
+                    #end
+
+
+            #end
+
+
+
+
+          #end
+
+         #AcademicsSlider
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+    #end
+
+
+
+#end
+
+#macro(CalloutContentSix)
+
+    #set ($CollegeSys = $_XPathTool.selectSingleNode($Module, 'module-block/content/system-data-structure/college-system'))
+
+    #set ($CsHeadline = $CollegeSys.getChild("headline").text)
+    #set ($CsHeadlineBr = $CollegeSys.getChild("headline-br").text)
+    #set ($CsBlurb = $CollegeSys.getChild("blurb").text)
+    #set ($CsButton = $CollegeSys.getChild("button-text").text)
+    #set ($CsButtonUrl = $CollegeSys.getChild("button-url").text)
+
+    #set( $colleges = $_XPathTool.selectNodes($CollegeSys, 'colleges'))
+
+    <section class="jumbotron jumbotron-schools" data-module="callout-content-six-schools">
+      <div class="container">
+        <div class="text-indent text-indent-h2">
+          <h2>$CsHeadline #if($CsHeadlineBr !="")<br/><span>$CsHeadlineBr</span>#end</h2>
+          <p>$CsBlurb</p>
+          <a href="$CsButtonUrl" class="btn btn-lg btn-default" role="button" >$CsButton</a></button>
+        </div>
+        <div class="row schools-grid">
+
+
+          #foreach ($college in $colleges)
+
+
+            #set ($ColLogo = $college.getChild("logo").getChild("path").text)
+            #set ($ColName = $college.getChild("name").text)
+            #set ($ColBlurb = $college.getChild("blurb").text)
+            #set ($ColButton = $college.getChild("button").text)
+            #set ($ColButtonUrl = $college.getChild("button-url").text)
+
+                #if($ColName == "Marshall")
+                    #set($ColClass = "thumb-marshall")
+                #elseif($ColName == "Muir")
+                    #set($ColClass = "thumb-muir")
+                #elseif($ColName == "Revelle")
+                    #set($ColClass = "thumb-revelle")
+                #elseif($ColName == "Roosevelt")
+                    #set($ColClass = "thumb-roosevelt")
+                #elseif($ColName == "Sixth")
+                    #set($ColClass = "thumb-sixth")
+                #elseif($ColName == "Warren")
+                    #set($ColClass = "thumb-warren")
+                #end
+
+
+                <div class="col-sm-4 no-gutter">
+                    <div class="thumbnail $ColClass">
+                        <div class="caption">
+                            <img class="img-responsive school-logo" src="$ColLogo" alt="logo $ColName"/>
+                            <h3>$ColName</h3>
+                            <p>$ColBlurb</p>
+                            <a href="$ColButtonUrl" class="btn btn-lg btn-primary" role="button">$ColButton</a>
+                        </div>
+                    </div>
+                </div>
+
+          #end
+
+
+        </div>
+      </div>
+    </section>
+
+#end
+
+#macro(html)
+
+    #set ($htmlBlock = $_XPathTool.selectSingleNode($Module, 'module-block/content/system-data-structure/html/content'))
+
+    $_SerializerTool.serialize($htmlBlock, true)
+
+#end
+
+#macro(TabCont)
+
+    #set ($TabCont = $_XPathTool.selectSingleNode($Module, 'module-block/content/system-data-structure/tabs-content-3'))
+    #set ($TcHeadline = $TabCont.getChild("headline").text)
+
+    #macro(TopTab)
+
+        ##set ($TabCont = $_XPathTool.selectSingleNode($Module, 'module-block/content/system-data-structure/tabs-content-3'))
+        ##set ($TcHeadline = $TabCont.getChild("headline").text)
+
+        #set($Tabs = $_XPathTool.selectNodes($TabCont, 'tab-1'))
+
+
+            #foreach($Tab in $Tabs)
+
+                #set ($TbName = $Tab.getChild("tab-name").text.toLowerCase())
+                #set($TabPanes = $_XPathTool.selectNodes($Tab, 'tab-pane'))
+
+                <li role="presentation" class="$_EscapeTool.xml($TbName) #if($foreach.first)active#end">
+                    <a href="#$_EscapeTool.xml($TbName)" aria-controls="$_EscapeTool.xml($TbName)" role="tab" data-toggle="tab">
+                      <h1>$_EscapeTool.xml($TbName)</h1>
+                   </a>
+                </li>
+            #end
+
+    #end
+
+    #macro(TabsNpanes)
+
+        #set($Tabs = $_XPathTool.selectNodes($TabCont, 'tab-1'))
+
+
+        #foreach($Tab in $Tabs)
+
+            #set ($TbName = $Tab.getChild("tab-name").text.toLowerCase())
+
+            #set($TabPanes = $_XPathTool.selectNodes($Tab, 'tab-pane'))
+
+                <div role="tabpanel" class="tab-pane #if($foreach.first)active#end" id="$_EscapeTool.xml($TbName)">
+
+                #foreach($TabPane in $TabPanes)
+
+                    #set ($TbpHeadline = $TabPane.getChild("center-headline").text)
+                    #set ($TbpType = $TabPane.getChild("col-type").text)
+                    #set($PaneColSplit = $_XPathTool.selectSingleNode($TabPane, 'col-split'))
+
+                    <div class="row text-center">
+                      <h3>$_EscapeTool.xml($TbpHeadline)</h3>
+                    </div>
+
+                    <div class="row">
+                    #if($TbpType == "Columns")
+
+                        #set($PaneCols = $_XPathTool.selectNodes($TabPane, 'cols'))
+
+                            #foreach($PaneCol in $PaneCols)
+
+                                #set ($ColHeadline = $PaneCol.getChild("headline").text)
+                                #set ($ColBlurb = $PaneCol.getChild("blurb").text)
+                                #set ($ColButton = $PaneCol.getChild("button").text)
+                                #set ($ColButtonURL = $PaneCol.getChild("button-url").text)
+
+                                <div class="col-sm-4">
+
+                                    <h4>$_EscapeTool.xml($ColHeadline)</h4>
+                                    <p>$_EscapeTool.xml($ColBlurb)</p>
+                                    #if($ColButton !="")<a href="$_EscapeTool.xml($ColButtonURL)" class="text-link">$_EscapeTool.xml($ColButton)</a>#end
+
+                                </div>
+
+                            #end
+
+
+                    #elseif($TbpType == "Split")
+
+                                #set ($ColsHeadline = $PaneColSplit.getChild("headline").text)
+                                #set ($ColsBlurb = $PaneColSplit.getChild("blurb").text)
+                                #set ($ColsButton = $PaneColSplit.getChild("button").text)
+                                #set ($ColsButtonURL = $PaneColSplit.getChild("button-url").text)
+                                #set ($ColsRContent = $PaneColSplit.getChild("right-content"))
+
+                                <div class="col-sm-6">
+                                    <h4>$_EscapeTool.xml($ColsHeadline)</h4>
+                                    <p>$_EscapeTool.xml($ColsBlurb)</p>
+                                    <a href="$_EscapeTool.xml($ColsButtonURL)" class="text-link">$_EscapeTool.xml($ColsButton)</a>
+                                </div>
+                                <div class="col-sm-5">
+                                    $_SerializerTool.serialize($ColsRContent, true)
+                                </div>
+
+                    #end
+                    </div>
+
+                #end
+
+                </div>
+
+        #end
+    #end
+
+
+
+
+<section class="jumbotron jumbotron-tab" data-module="tabbed-content-three">
+  <div class="container">
+    <div class="row">
+      <h2 class="text-center">$_EscapeTool.xml($TcHeadline)</h2>
+      <div class="tab-module">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs nav-justified responsive" role="tablist">
+
+         #TopTab
+
+        </ul>
+
+        <!-- Tab panes -->
+        <div class="tab-content responsive">
+
+        #TabsNpanes
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+#end
+
+
+#macro(ModuleLoop)
+
+
+
+    #foreach($Module in $Modules)
+
+        #set ($ContentFlag = $Module.getChild("module-wy").text)
+        ##set ($ModuleName = $Module.getChild("module-block").getChild("name").text)
+        #set ($ModuleName = "")
+        #set ($ModuleName = $Module.getChild("module-block").getChild("content").getChild("system-data-structure").getChild("module-id").text)
+
+
+
+
+
+        #if($ContentFlag == "WYSIWYG")
+
+            #set ($CustomContent = $Module.getChild("wysiwyg"))
+
+
+            <section class="page-inner">
+            <div class="container">
+                $_SerializerTool.serialize($CustomContent, true)
+            </div>
+            </section>
+
+
+        #elseif($ModuleName == "fact-module")
+
+
+        <div style="border: 1px solid blue; margin:10px; padding:10px;">
+        #AcademicsSlider
+        </div>
+
+
+        #elseif($ModuleName == "life-intro")
+
+
+         #LifeIntro
+
+         #elseif($ModuleName == "inset-cta")
+
+
+         #InsetCTA
+
+         #elseif($ModuleName == "upcoming-events")
+
+
+         #UpcomingEvents
+
+         #elseif($ModuleName == "headline-text")
+
+         #HeadlineText
+
+         #elseif($ModuleName == "text-image-cta")
+
+         #TexImgCta
+
+         #elseif($ModuleName == "text-image-cta-links")
+
+         #TexImgCtaLinks
+
+         #elseif($ModuleName == "callout-image-small")
+
+         #CalloutImageSmall
+
+         #elseif($ModuleName == "callout-image-social")
+
+         #CalloutImageSocial
+
+         #elseif($ModuleName == "callout-content-2-and-3")
+
+         #CalloutContentTwoThree
+
+         #elseif($ModuleName == "callout-content-4")
+
+         #CalloutContentFour
+
+         #elseif($ModuleName == "content-2-staggered")
+
+         #StaggeredTwo
+
+         #elseif($ModuleName == "text-and-image")
+
+         #TextImage
+
+         #elseif($ModuleName == "custom-affiliate")
+
+         #CustomAffiliate
+
+         #elseif($ModuleName == "content-two-calendar")
+
+         #AcademicYear
+
+         #elseif($ModuleName == "testimonials")
+
+         #Testimonials
+
+         #elseif($ModuleName == "callout-content-9")
+
+         #CalloutContentNine
+
+         #elseif($ModuleName == "news-with-images")
+
+         #NewsImg
+
+         #elseif($ModuleName == "stats")
+
+         #Stats
+
+         #elseif($ModuleName == "callout-content-6")
+
+         #CalloutContentSix
+
+         #elseif($ModuleName == "html")
+
+         #html
+
+         #elseif($ModuleName == "tabbed-content-3")
+
+         #TabCont
+
+        #end
+
+
+    #end
+
+#end
+
+##Macro Output
+#HeroIntro
+#ModuleLoop
