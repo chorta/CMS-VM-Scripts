@@ -14,9 +14,10 @@
             #foreach($Tab in $Tabs)
 
                 #set ($TbName = $Tab.getChild("tab-name").text.toLowerCase())
+                #set ($TbBgClass = $Tab.getChild("background").getChild("class").text)
                 #set($TabPanes = $_XPathTool.selectNodes($Tab, 'tab-pane'))
 
-                <li role="presentation" class="$_EscapeTool.xml($TbName) #if($foreach.first)active#end">
+                <li role="presentation" class="$_EscapeTool.xml($TbName) $TbBgClass #if($foreach.first)active#end">
                     <a href="#$_EscapeTool.xml($TbName)" aria-controls="$_EscapeTool.xml($TbName)" role="tab" data-toggle="tab">
                       <h1>$_EscapeTool.xml($TbName)</h1>
                    </a>
