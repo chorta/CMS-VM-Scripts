@@ -1,0 +1,41 @@
+#set($sUrl = $_XPathTool.selectSingleNode($contentRoot, '//dynamic-metadata/value').value) #set($url = $_XPathTool.selectSingleNode($contentRoot, '//dynamic-metadata/value').value) #set($ext = '.html')#macro(Tree)#set($topFolders = $_XPathTool.selectNodes($contentRoot, 'system-folder[display-name]')) #set($currentFolder = $_XPathTool.selectSingleNode($contentRoot, '//system-folder/system-page[@current]/..')) #set ($INTERNAL_BEGIN = "[system-view:internal]")
+#set ($INTERNAL_END = "[/system-view:internal]") #set ($START = 0) #set ($END = 1) #macro (hhInternal $node $tagType) #if ($node.getChild('is-published') && $node.getChild('is-published').text == "false") #if ($tagType == $START) $INTERNAL_BEGIN #elseif ($tagType == $END) $INTERNAL_END #else #end #end #end #macro (isULOk $items) #set ($uldisplay = "false") #if ($items) #if ($items.size() == 0) #set ($uldisplay = "false") #elseif ($items.size() == 1) #foreach($item in $items) #set ($itemName = $item.getChild('name').text) #if ($itemName == "index") #set ($uldisplay = "false") #else #set ($uldisplay = "true") #end #end #else #set ($uldisplay = "true") #end #end #end #macro (generateDropDownMenu $menu) #set ($count = 0) #set ($initialUL = "false") #set ($totalDropDown = $menu.size()) #foreach($page in $menu) #set ($count = $count + 1) #isULOk($menu) #hhInternal ($page $START) #set ($name = $page.getChild('name').text) #if ($name == "index") #set ($totalDropDown = $totalDropDown - 1) #set ($count = $count - 1) #end #if ($uldisplay == "true" && $initialUL == "false") #set ($initialUL = "true") <ul class="navbar-sublist"> #end
+
+#if ($name != "index") #set($displayName = $page.getChild('display-name')) #if ($page.getName() == "system-folder") #set ($dropdownUrl = $page.getChild('path').text + "/index") #elseif ($page.getName() == "system-symlink") #set ($dropdownUrl = $_SerializerTool.serialize($page.getChild('link'), true)) #else #set ($dropdownUrl = $page.getChild('path').text) #end #if ($dropdownUrl.matches(".*(https?://|www\.).*")) #set ($url = "") #set ($ext = "") #else #set ($url = $sUrl) #set ($ext = ".html") #end <li><a href="$url$dropdownUrl$ext">$_SerializerTool.serialize($displayName, true)</a></li> #end #if ($uldisplay == "true" && $count == $totalDropDown) </ul> #end #hhInternal ($page $END) #end #end #macro (checIfDropDown $menu) #set ($count = 0) #set ($initialUL = "false") #set ($totalDropDown = $menu.size()) #foreach($page in $menu) #set ($count = $count + 1) #isULOk($menu) #hhInternal ($page $START) #set ($name = $page.getChild('name').text) #if ($name == "index") #set ($totalDropDown = $totalDropDown - 1) #set ($count = $count - 1) #end #if ($uldisplay == "true" && $initialUL == "false") #set ($initialUL = "true") #end #if ($name != "index") #set($displayName = $page.getChild('display-name')) #if ($page.getName() == "system-folder") #set ($dropdownUrl = $page.getChild('path').text + "/index") #elseif ($page.getName() == "system-symlink") #set ($dropdownUrl = $_SerializerTool.serialize($page.getChild('link'), true)) #else #set ($dropdownUrl = $page.getChild('path').text) #end #end #if ($uldisplay == "true" && $count == $totalDropDown) #end #hhInternal ($page $END) #end #end <ul class="navbar-list">
+  #foreach ($child in $topFolders)
+    #set($topLevelUrl = '')
+    #set($symlinks = $_XPathTool.selectNodes($child, 'system-symlink'))
+    #set($topLevelPages = $_XPathTool.selectNodes($child, 'system-page'))
+
+      #foreach ($topLevelPage in $topLevelPages)
+
+
+        #if ($topLevelPage.getChild('name').text == 'index')
+          #set ($topLevelUrl = $child.getChild('path').text + "/index")
+        #end
+
+      #end
+
+    #foreach ($symlink in $symlinks)
+
+      #set($slink = '')
+
+  #if ($symlink.getChild('name').text == 'index')
+    #set($topLevelUrl = $symlink.getChild('link').text)
+    #break
+  #else
+    #set ($topLevelUrl = $child.getChild('path').text + "/index")
+  #end
+#end
+#if ($topLevelUrl.matches(".*(https?://|www\.).*"))
+  #set ($url = "")
+  #set ($ext = "")
+#else
+  #set ($url = $sUrl)
+  #set ($ext = ".html")
+#end
+#set ($topLevelName = $child.getChild('display-name'))
+#set ($classActive = "")
+#set ($dropDownMenu = $_XPathTool.selectNodes($child, 'system-folder[display-name] | system-page[display-name] | system-symlink[display-name]'))
+#set ($dropDownMenu2 = $_XPathTool.selectNodes($child, 'system-folder[display-name] | system-page[display-name] | system-symlink[display-name]')) #hhInternal ($child $START) #if ($currentFolder) #if ($currentFolder.getChild('path').text == $child.getChild('path').text) #set ($classActive = "active") #end #end #checIfDropDown($dropDownMenu)
+#if ($initialUL =="true") <li class="navbar-subnav $classActive"><a href="$url$topLevelUrl$ext">$_SerializerTool.serialize($topLevelName, true) </a> #else <li class="$classActive"><a href="$url$topLevelUrl$ext">$_SerializerTool.serialize($topLevelName, true)</a> #end #generateDropDownMenu($dropDownMenu) </li> #hhInternal ($child $END) #end </ul>#end #set ($outputTree = "#Tree") jsonCallback ({"decorator.menu":"<!--#protect${_EscapeTool.javascript($outputTree)}#protect-->"})
